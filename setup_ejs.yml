@@ -34,7 +34,7 @@
 
     - name: Create index.ejs file
       ansible.builtin.copy:
-        src: /home/centos/ejs_project_1/index.js
+        src: /home/centos/ejs_project_1/index.ejs
         dest: /home/centos/ejs_project/views/index.ejs
 
 
