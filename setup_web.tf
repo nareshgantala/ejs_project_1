@@ -9,10 +9,14 @@ data "aws_instances" "existing_instance" {
   }
 }
 
+variable "instance_public_ip" {
+  default = data.aws_instances.existing_instance.public_ip
+}
+
 resource "null_resource" "ansible_playbook" {
   provisioner "local-exec" {
     command = <<-EOF
-      ansible-playbook -i ${data.aws_instances.existing_instance.public_ip}, setup_ejs.yml -e "ansible_user=centos ansible_password=DevOps321"
+      ansible-playbook -i ${instance_public_ip}, setup_ejs.yml -e "ansible_user=centos ansible_password=DevOps321"
     EOF
   }
 
