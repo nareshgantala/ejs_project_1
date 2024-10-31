@@ -1,0 +1,13 @@
+[Unit]
+Description=Node.js EJS Application
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/node /home/centos/ejs_project/app.js
+WorkingDirectory=/home/centos/ejs_project
+Restart=always
+User=centos
+Environment=PORT=3000
+
+[Install]
+WantedBy=multi-user.target
