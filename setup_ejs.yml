@@ -1,0 +1,86 @@
+--- 
+- name: setup ejs on ec2 
+  hosts: localhost
+  become: yes
+  tasks:
+    - name: install node.js
+      ansible.builtin.dnf:
+        name: node.js:20
+        state: present
+
+    - name: Create a project directory if it does not exist
+      ansible.builtin.file:
+        path: /home/centos/ejs_project
+        state: directory
+        mode: u+rwx,g+rwx,o+rwx
+    - name: Install Express and EJS
+      npm:
+        name: "{{ item }}"
+        path: /home/ec2-user/my-ejs-app
+      loop:
+        - express
+        - ejs
+
+    - name: Create app.js file
+      ansible.builtin.copy:
+        dest: /home/centos/ejs_project/app.js
+        content: |
+          const express = require("express");
+          const app = express();
+          app.set("view engine", "ejs");
+          app.get("/", (req, res) => {
+            res.render("index", { title: "Hello, EJS!" });
+          });
+          const PORT = process.env.PORT || 3000;
+          app.listen(PORT, () => {
+            console.log(`Server running on http://localhost:${PORT}`);
+          });
+
+    - name: Create views directory
+      ansible.builtin.file:
+        path: /home/centos/ejs_project/views
+        state: directory
+
+    - name: Create index.ejs file
+      ansible.builtin.copy:
+        dest: /home/ec2-user/my-ejs-app/views/index.ejs
+        content: |
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title><%= title %></title>
+          </head>
+          <body>
+            <h1>Welcome to <%= title %>!</h1>
+          </body>
+          </html>
+
+    - name: Create systemd service for the Node.js application
+      ansible.builtin.copy:
+        dest: /etc/systemd/system/ejs_project.service
+        content: |
+          [Unit]
+          Description=Node.js EJS Application
+          After=network.target
+
+          [Service]
+          ExecStart=/usr/bin/node /home/centos/ejs_project/app.js
+          WorkingDirectory=/home/centos/ejs_project
+          Restart=always
+          User=centos
+          Environment=PORT=3000
+
+          [Install]
+          WantedBy=multi-user.target
+
+    - name: Enable and start the Node.js application service
+      ansible.builtin.systemd:
+        name: ejs_project
+        enabled: yes
+        state: started
+    
+    
+
+    
