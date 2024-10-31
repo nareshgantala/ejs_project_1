@@ -5,7 +5,7 @@
   tasks:
     - name: install node.js
       ansible.builtin.dnf:
-        name: node.js:20
+        name: nodejs:20
         state: present
 
     - name: Create a project directory if it does not exist
