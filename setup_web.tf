@@ -9,20 +9,17 @@ data "aws_instances" "existing_instance" {
   }
 }
 
-# variable "instance_public_ip" {
-#   default = data.aws_instances.existing_instance.public_ip
-# }
 
 output "instance_public_ip" {
   value = data.aws_instances.existing_instance.public_ips
 }
 
-# resource "null_resource" "ansible_playbook" {
-#   provisioner "local-exec" {
-#     command = <<-EOF
-#       ansible-playbook -i ${data.aws_instances.existing_instance.public_ips}, setup_ejs.yml -e "ansible_user=centos ansible_password=DevOps321"
-#     EOF
-#   }
+resource "null_resource" "ansible_playbook" {
+  provisioner "local-exec" {
+    command = <<-EOF
+      ansible-playbook -i ${data.aws_instances.existing_instance.public_ips}, setup_ejs.yml -e "ansible_user=centos ansible_password=DevOps321"
+    EOF
+  }
 
-#   depends_on = [data.aws_instances.existing_instance]
-# }
+  depends_on = [data.aws_instances.existing_instance]
+}
