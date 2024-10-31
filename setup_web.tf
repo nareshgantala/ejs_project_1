@@ -9,15 +9,14 @@ data "aws_instances" "existing_instance" {
   }
 }
 
-
 output "instance_public_ip" {
-  value = data.aws_instances.existing_instance.public_ips
+  value = data.aws_instances.existing_instance.public_ips[0]
 }
 
 resource "null_resource" "ansible_playbook" {
   provisioner "local-exec" {
     command = <<-EOF
-      ansible-playbook -i ${data.aws_instances.existing_instance.public_ips}, setup_ejs.yml -e "ansible_user=centos ansible_password=DevOps321"
+      ansible-playbook -i ${data.aws_instances.existing_instance.public_ips[0]}, setup_ejs.yml -e "ansible_user=centos ansible_password=DevOps321"
     EOF
   }
 
