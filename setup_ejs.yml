@@ -1,6 +1,6 @@
 --- 
 - name: setup ejs on ec2 
-  hosts: localhost
+  hosts: all
   become: yes
   tasks:
     - name: install node.js
