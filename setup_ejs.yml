@@ -43,7 +43,7 @@
 
     - name: Create index.ejs file
       ansible.builtin.copy:
-        dest: /home/ec2-user/my-ejs-app/views/index.ejs
+        dest: /home/centos/ejs_project/views/index.ejs
         content: |
           <!DOCTYPE html>
           <html lang="en">
