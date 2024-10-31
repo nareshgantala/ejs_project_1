@@ -34,15 +34,14 @@
 
     - name: Create index.ejs file
       ansible.builtin.copy:
-        src: //home/centos/ejs_project/index.js
+        src: /home/centos/ejs_project_1/index.js
         dest: /home/centos/ejs_project/views/index.ejs
 
 
     - name: Create systemd service for the Node.js application
       ansible.builtin.copy:
+        src: /home/centos/ejs_project_1/ejs_project.service
         dest: /etc/systemd/system/ejs_project.service
-        content: |
-
 
     - name: Reload systemd to apply the new service
       ansible.builtin.systemd:
